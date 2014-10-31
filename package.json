@@ -1,0 +1,23 @@
+{
+  "name": "docker-builder",
+  "version": "0.0.1",
+  "description": "Automated Docker Builder",
+  "main": "index.js",
+  "keywords": [
+    "docker",
+    "docker-builder",
+    "docker-index",
+    "docker-hub",
+    "docker-registry"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/kjunine/docker-builder.git"
+  },
+  "homepage": "https://github.com/kjunine/docker-builder",
+  "author": {
+    "name": "Daniel Ku",
+    "email": "kjunine@gmail.com"
+  },
+  "license": "MIT"
+}
