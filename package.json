@@ -19,5 +19,13 @@
     "name": "Daniel Ku",
     "email": "kjunine@gmail.com"
   },
-  "license": "MIT"
+  "license": "MIT",
+  "dependencies": {
+    "bluebird": "^2.3.10",
+    "lodash": "^2.4.1",
+    "nodegit": "^0.1.4",
+    "request": "^2.47.0",
+    "tar-fs": "^1.2.0",
+    "tmp": "0.0.24"
+  }
 }
