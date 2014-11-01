@@ -119,30 +119,6 @@ var checkout = function(repo, tag) {
     });
 };
 
-// createTemporaryName()
-//   .then(function(filepath) {
-//     return clone('https://github.com/kjunine/mongodb-replset-configurator', filepath)
-//       .then(function() {
-//         return tags(filepath);
-//       })
-//       .then(function(tags) {
-//         console.log(tags);
-//       });
-//   });
-
-// clone('https://github.com/kjunine/mongodb-replset-configurator', '.tmp/temp')
-//   .then(function(repo) {
-//     return tags(repo);
-//   })
-//   .then(function(tags) {
-//     console.log(tags);
-//   });
-
-// open('.tmp/temp')
-//   .then(function(repo) {
-//     return checkout(repo, '0.0.0');
-//   });
-
 var pack = function(source) {
   return tar.pack(source, {
       ignore: function(name) {
@@ -150,8 +126,6 @@ var pack = function(source) {
       }
     });
 };
-
-
 
 var request = function(stream, options) {
   var deferred = Q.defer();
@@ -171,128 +145,29 @@ var request = function(stream, options) {
   return deferred.promise;
 };
 
+var request = function(server, tag) {
+  var url = 'http://' + server + '/build?t=' + tag;
+
+  return Q.try(function() {
+    return _request.post(url);
+  });
+};
 
 
 var source = '.tmp/temp';
 
-clone('https://github.com/kjunine/docker-sample', source)
-//open(source)
+//clone('https://github.com/kjunine/docker-sample', source)
+open(source)
   .then(function(repo) {
     return checkout(repo, '0.0.2');
   })
   .then(function(repo) {
-    var tag = 'test/test';
-
-    // pack(source).pipe(_request.post('http://localhost:2375/build?t=test/test'));
-
-    return request(pack(source), {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/tar'
-      },
-      uri: 'http://localhost:2375/build?t=' + tag,
-      timeout: 100000
-    })
+    return request('localhost:2375', 'test/test');
   })
-  .then(function(result) {
-    console.log(result);
+  .then(function(req) {
+    pack(source).pipe(req);
+    req.pipe(process.stdout);
   })
   .catch(function(err) {
     console.log(err);
   });
-
-
-
-
-
-
-var INSPECT = function(o) {
-  for (var p in o) {
-    console.log(p, '->', o[p]);
-  }
-};
-
-var TYPE = function(o) {
-  if (o instanceof git.Repo) return 'Repo';
-  if (o instanceof git.Reference) return 'Reference';
-  if (o instanceof git.Blob) return 'Blob';
-  if (o instanceof git.Tree) return 'Tree';
-  if (o instanceof git.TreeEntry) return 'TreeEntry';
-  if (o instanceof git.Oid) return 'Oid';
-  if (o instanceof git.Object) return 'Object';
-  if (o instanceof git.Commit) return 'Commit';
-  if (o instanceof git.Tag) return 'Tag';
-  if (o instanceof git.Index) return 'Index';
-  if (o instanceof git.IndexEntry) return 'IndexEntry';
-  return 'ELSE';
-};
-
-// var test = function(target) {
-//   var deferred = Q.defer();
-
-//   open(target, function(err, repo) {
-//     if (err) return deferred.reject(err);
-
-//     repo.openIndex(function(err, index) {
-//       if (err) return deferred.reject(err);
-
-//       console.log('isIndex?', index instanceof git.Index);
-
-//       var entries = index.entries();
-//       _.forEach(entries, function(entry) {
-//         console.log(entry.oid(), entry.path());
-//         // console.log(entry.content());
-//       });
-
-//       return deferred.resolve();
-//     })
-//   });
-
-//   return deferred.promise;
-// };
-
-// test('temp');
-
-
-
-// var test = function(target) {
-//   var deferred = Q.defer();
-
-//   open(target, function(err, repo) {
-//     if (err) return deferred.reject(err);
-
-//     repo.getMaster(function(err, master) {
-//       if (err) return deferred.reject(err);
-
-//       console.log('isCommit?', master instanceof git.Commit);
-
-//       return deferred.resolve();
-//     })
-//   });
-
-//   return deferred.promise;
-// };
-
-// test('temp');
-
-
-
-// var test = function(target) {
-//   var deferred = Q.defer();
-
-//   open(target, function(err, repo) {
-//     if (err) return deferred.reject(err);
-
-//     repo.getTag('refs/tags/0.0.1', function(err, commit) {
-//       if (err) return deferred.reject(err);
-
-//       console.log('isCommit?', commit instanceof git.Commit);
-
-//       return deferred.resolve();
-//     })
-//   });
-
-//   return deferred.promise;
-// };
-
-// test('temp');
