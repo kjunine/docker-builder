@@ -162,10 +162,9 @@ var request = function(stream, options) {
     if (res.statusCode !== 200) return deferred.reject('[CODE: ' + res.statusCode + '] ' + res.body);
 
     try {
-      var data = JSON.parse(body);
-      return deferred.resolve(data);
+      return deferred.resolve(body);
     } catch (e) {
-      return deferred.rejrect(e);
+      return deferred.reject(e);
     }
   }));
 
@@ -176,23 +175,30 @@ var request = function(stream, options) {
 
 var source = '.tmp/temp';
 
-open(source)
+clone('https://github.com/kjunine/docker-sample', source)
+//open(source)
   .then(function(repo) {
-    return checkout(repo, '0.0.0');
+    return checkout(repo, '0.0.2');
   })
   .then(function(repo) {
     var tag = 'test/test';
 
-    pack(source).pipe(_request.post('http://localhost:2375/build?t=test/test'));
+    // pack(source).pipe(_request.post('http://localhost:2375/build?t=test/test'));
 
-    // return request(pack(source), {
-    //   method: 'POST',
-    //   headers: {
-    //     'Content-Type': 'application/tar'
-    //   },
-    //   uri: 'http://localhost:2375/build?t=' + tag,
-    //   timeout: 100000
-    // })
+    return request(pack(source), {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/tar'
+      },
+      uri: 'http://localhost:2375/build?t=' + tag,
+      timeout: 100000
+    })
+  })
+  .then(function(result) {
+    console.log(result);
+  })
+  .catch(function(err) {
+    console.log(err);
   });
 
 
